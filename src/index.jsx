@@ -19,6 +19,11 @@ class CircularProgressbar extends React.Component {
   }
 
   componentDidMount() {
+    setTimeout(() => {
+      this.setState({
+        maxPercentage: this.props.maxPercentage,
+      });
+    }, 0);
     if (this.props.initialAnimation) {
       this.initialTimeout = setTimeout(() => {
         this.requestAnimationFrame = window.requestAnimationFrame(() => {
@@ -71,9 +76,11 @@ class CircularProgressbar extends React.Component {
   }
 
   getPathStyles() {
+    const { maxPercentage, percentage } = this.state;
+
     const diameter = Math.PI * 2 * this.getPathRadius();
-    const truncatedPercentage = Math.min(Math.max(this.state.percentage, MIN_PERCENTAGE), MAX_PERCENTAGE);
-    const dashoffset = ((100 - truncatedPercentage) / 100) * diameter;
+    const truncatedPercentage = Math.min(Math.max(percentage, MIN_PERCENTAGE), maxPercentage);
+    const dashoffset = ((maxPercentage - truncatedPercentage) / maxPercentage) * diameter;
 
     return {
       strokeDasharray: `${diameter}px ${diameter}px`,
@@ -160,6 +167,7 @@ CircularProgressbar.propTypes = {
   backgroundPadding: PropTypes.number,
   initialAnimation: PropTypes.bool,
   counterClockwise: PropTypes.bool,
+  maxPercentage: PropTypes.number,
 };
 
 CircularProgressbar.defaultProps = {
@@ -184,6 +192,7 @@ CircularProgressbar.defaultProps = {
   backgroundPadding: null,
   initialAnimation: false,
   counterClockwise: false,
+  maxPercentage: MAX_PERCENTAGE,
 };
 
 export default CircularProgressbar;
